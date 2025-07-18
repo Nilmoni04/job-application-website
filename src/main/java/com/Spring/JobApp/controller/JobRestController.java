@@ -41,7 +41,7 @@ public class JobRestController {
     }
 
     //Update job by id
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public String updateJob(@PathVariable int id, @RequestBody Job updatedJob) {
         for(Job job : jobList) {
             if(job.getId() == id) {
