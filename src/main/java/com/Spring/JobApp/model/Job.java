@@ -1,6 +1,13 @@
 package com.Spring.JobApp.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="jobs")
 public class Job {
+    @Id
     private int id;
     private String title;
     private String company;
