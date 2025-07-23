@@ -2,6 +2,7 @@ package com.Spring.JobApp.controller;
 
 import com.Spring.JobApp.model.Job;
 import com.Spring.JobApp.repo.JobRepository;
+import com.Spring.JobApp.service.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,44 +62,30 @@ public class JobRestController {
 
     //Updated job repository after applying spring-data-jpa
     @Autowired
-    private JobRepository jobRepo;
+    private JobService jobService;
 
     @GetMapping
     public List<Job> getAllJobs() {
-        return jobRepo.findAll();
+        return jobService.getAllJobs();
     }
 
     @GetMapping("/{id}")
     public Job getJobById(@PathVariable int id) {
-        return jobRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Job not found with id " + id));
+        return jobService.getJobById(id);
     }
 
     @PostMapping
     public String createNewJob(@RequestBody Job job) {
-        jobRepo.save(job);
-        return  "Job created successfully";
+        return jobService.createNewJob(job);
     }
 
     @DeleteMapping("/{id}")
     public String deleteJob(@PathVariable int id) {
-        if(jobRepo.existsById(id)) {
-            jobRepo.deleteById(id);
-            return "Job deleted...";
-        } else {
-            return "job not found by id";
-        }
+        return jobService.deleteJob(id);
     }
 
     @PutMapping("/{id}")
     public String updateJob(@PathVariable int id, @RequestBody Job updatedJob) {
-        return jobRepo.findById(id).map(job -> {
-            job.setTitle(updatedJob.getTitle());
-            job.setCompany(updatedJob.getCompany());
-            job.setLocation(updatedJob.getLocation());
-            job.setDescription(updatedJob.getDescription());
-            jobRepo.save(job);
-            return "Job updated successfully!";
-        }).orElse("Job not found!");
+        return jobService.updateJob(id, updatedJob);
     }
 }
