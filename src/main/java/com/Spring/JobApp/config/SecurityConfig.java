@@ -26,15 +26,27 @@ public class SecurityConfig {
         provider.setPasswordEncoder(new BCryptPasswordEncoder(10));
         return provider;
     }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http.csrf(customizer -> customizer.disable())
-                .authorizeHttpRequests(request -> request.anyRequest().authenticated())
-                .httpBasic(Customizer.withDefaults())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        http.csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .antMatchers("/login", "/register", "/css/**", "/js/**").permitAll() // allow these
+                        .anyRequest().authenticated()
+                )
+                .formLogin(form -> form
+                        .loginPage("/login")          // custom login page URL
+                        .loginProcessingUrl("/doLogin") // form action URL
+                        .defaultSuccessUrl("/", true) // after successful login
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout")
+                        .permitAll()
+                );
 
         return http.build();
     }
+
 }

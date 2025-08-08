@@ -1,17 +1,19 @@
 package com.Spring.JobApp.model;
-
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
-@Table(name="jobs")
+@Table(name = "jobs")
 public class Job {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // For MySQL auto increment
     private int id;
+
     private String title;
     private String company;
     private String location;
+
+    @Column(length = 1000) // Optional, to allow long descriptions
     private String description;
 
     public int getId() {
